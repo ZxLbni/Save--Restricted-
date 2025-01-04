@@ -1,26 +1,32 @@
-import pyrogram
+import os
+import time
+import threading
+import json
 from pyrogram import Client, filters
 from pyrogram.errors import UserAlreadyParticipant, InviteHashExpired, UsernameNotOccupied
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from dotenv import load_dotenv
 
-import time
-import os
-import threading
-import json
+# Load environment variables
+load_dotenv()
 
-with open('config.json', 'r') as f: DATA = json.load(f)
-def getenv(var): return os.environ.get(var) or DATA.get(var, None)
+# Get environment variables
+bot_token = os.getenv("TOKEN")
+api_hash = os.getenv("HASH")
+api_id = int(os.getenv("ID"))
+session_string = os.getenv("STRING")
 
-bot_token = getenv("TOKEN") 
-api_hash = getenv("HASH") 
-api_id = getenv("ID")
+# Initialize bot and account clients
 bot = Client("mybot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
-ss = getenv("STRING")
-if ss is not None:
-	acc = Client("myacc" ,api_id=api_id, api_hash=api_hash, session_string=ss)
-	acc.start()
-else: acc = None
+if session_string:
+    acc = Client("myacc", api_id=api_id, api_hash=api_hash, session_string=session_string)
+    acc.start()
+else:
+    acc = None
+
+# Rest of your code remains unchanged
+
 
 # download status
 def downstatus(statusfile,message):
